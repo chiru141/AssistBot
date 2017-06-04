@@ -1,9 +1,11 @@
 import os,sys
+import general_knowledge
 from flask import Flask,request
+#from utils import wit_response
 from pymessenger import Bot
 
 app = Flask(__name__)
-PAGE_ACCESS_TOKEN ="EAAJHRsRCiU0BABv4ksAvd6nqrxjxyLBCBtW4bQpJm6NRX9o1q1NZAQfA0pj8OZBU5vLsiq3qCpxEjTEHngQ2eD5ZBC1YeqeUFosp9ZAbwps9Bfg2bpZAdJfTy6aUZAkZCzKLBZAYLKPRZAULSnvtgugLGQV0rjM2QRiCPhgP1QUNFvgZDZD"
+PAGE_ACCESS_TOKEN ="EAAJHRsRCiU0BAOX5oN3I6Y1eW4I9DZBObzHhlrJZAHZCnmnLshqlAm0WfrPFX0hUajilBh8K3aprxsus9C2jeudo4ZCVaLsOotDuToTLl5cyue8zKOzvttnZARNGuufb3Sl5vZA6zKgkd659fzZClGGZBfcnBcnFNo5559fjrLHyigZDZD"
 bot = Bot(PAGE_ACCESS_TOKEN)
 @app.route('/', methods=['GET'])
 def verify():
@@ -14,10 +16,13 @@ def verify():
         return request.args["hub.challenge"],200
     return "Hello World",200
 
+
+
 @app.route('/',methods=['POST'])
 def webhook():
     data = request.get_json()
     log(data)
+
     if(data['object']) == 'page':
        for entry in data['entry']:
          for messaging_event in entry['messaging']:
@@ -29,8 +34,11 @@ def webhook():
                     messaging_text=messaging_event['message']['text']
                 else:
                     messaging_text='no text'
-            response = messaging_text
+            #response = messaging_text
+            response = general_knowledge.main(messaging_text)
             bot.send_text_message(sender_id,response)
+            
+
     return "ok",200
 
     
