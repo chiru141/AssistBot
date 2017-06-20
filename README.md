@@ -6,4 +6,5 @@ expected features:
 - food related queries 
 - Location based questions
 - General knowledge questions
--entertainment(jokes)
+- Entertainment(jokes)
+
