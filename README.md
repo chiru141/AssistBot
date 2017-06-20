@@ -5,4 +5,5 @@ expected features:
 - News
 - food related queries 
 - Location based questions
-- General knowledge questions 
+- General knowledge questions
+-entertainment(jokes)
