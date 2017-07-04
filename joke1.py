@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 from random import shuffle
 import sys
 from wit import Wit
-import emoji 
+ 
 
 access_token= "MGMGAD7W5MP2CQNPMZWJWY7RVE4VPR3R"
 all_jokes = {
@@ -49,6 +48,7 @@ all_jokes = {
         "What happens to a frog's car when it breaks down?It gets toad away.",
  'It gets toad away.',
  'Q: What did the duck say when he bought lipstick?A: "Put it on my bill."',
+ 'A: "Put it on my bill."',
  'A boy is selling fish on a corner. To get his customers\' attention, he is yelling, "Dam fish for sale! Get your dam fish here!" A pastor hears this and asks, "Why are you calling them \'dam fish.\'" The boy responds, "Because I caught these fish at the local dam." The pastor buys a couple fish, takes them home to his wife, and asks her to cook the dam fish. The wife responds surprised, "I didn\'t know it was acceptable for a preacher to speak that way." He explains to her why they are dam fish. Later at the dinner table, he asks his son to pass the dam fish. He responds, "That\'s the spirit, Dad! Now pass the f*cking potatoes!"',
  'A blonde and a redhead have a ranch. They have just lost their bull. The women need to buy another, but only have $500. The redhead tells the blonde, "I will go to the market and see if I can find one for under that amount.  If I can, I will send you a telegram."  She goes to the market and finds one for $499. Having only one dollar left, she goes to the telegraph office and finds out that it costs one dollar per word. She is stumped on how to tell the blonde to bring the truck and trailer. Finally, she tells the telegraph operator to send the word "comfortable." Skeptical, the operator asks, "How will she know to come with the trailer from just that word?" The redhead replies, "She\'s a blonde so she reads slow: \'Come for ta bull.\'"',
  "Q: Can a kangaroo jump higher than the Empire State Building? A: Of course. The Empire State Building can't jump.",
@@ -94,21 +94,22 @@ def response_fb():
         
 def merge(request):
     context = request['context']
+    print context
     entities = request['entities']
-    
+    print entities
 
     if 'joke' in context:
         del context['joke']
     greet = first_entity_value(entities, 'greet')
     if greet:
-        context['greet'] = 'Greetings'+ emoji.emojize(':blush:', use_aliases=True)
+        context['greet'] = 'Greetings'
     
     emotion = first_entity_value(entities, 'emotion')
     if emotion:
-        context['emot'] = 'I can cheer you up. '+emoji.emojize(':wink:', use_aliases=True) if emotion == 'sad' else ' I am so happy for you.' + emoji.emojize(':smile:', use_aliases=True)
+        context['emot'] = 'I can cheer you up. ' if emotion == 'sad' else ' I am so happy for you.' 
     intent = first_entity_value(entities, 'intent')
     if intent:
-        context['intro']=' I tell jokes. If you are upset or bored, I can cheer you up with my funny jokes' + emoji.emojize(':smile:', use_aliases=True)
+        context['intro']=' I tell jokes. If you are upset or bored, I can cheer you up with my funny jokes'
     jokenum = first_entity_value(entities, 'jokenum')
     if jokenum:
         context['num']=jokenum
@@ -122,13 +123,13 @@ def merge(request):
           context['cat'] = joketype1
     yesno = first_entity_value(entities, 'yesno')
     if yesno:
-        context['ny']= 'I will try my best to make you laugh'+ emoji.emojize(':smile:', use_aliases=True) if yesno== 'yes' else 'Okay, see you later.'+ emoji.emojize(':wave:', use_aliases=True)
+        context['ny']= 'I will try my best to make you laugh' if yesno== 'yes' else 'Okay, see you later.'
     bubye = first_entity_value(entities, 'bubye')
     if bubye:
-        context['bubye'] = 'Goodbye. Take care'+ emoji.emojize(':wave:', use_aliases=True)
+        context['bubye'] = 'Goodbye. Take care'
     sentiment = first_entity_value(entities, 'sentiment')    
     if sentiment:
-        context['ack'] = 'Ohh!I am so good at my job!.'+ emoji.emojize(':satisfied:', use_aliases=True) if sentiment == 'positive' else 'Hmm. I think I need to work more on my humour. '+ emoji.emojize(':disappointed:', use_aliases=True)
+        context['ack'] = 'Ohh!I am so good at my job!.' if sentiment == 'positive' else 'Hmm. I think I need to work more on my humour. '
     elif 'ack' in context:
         del context['ack']
     return context
@@ -151,6 +152,7 @@ def select_joke1(request):
 
 
 actions = {
+   
     'send': send,
     'merge': merge,
     'select-joke': select_joke,

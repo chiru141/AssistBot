@@ -12,8 +12,20 @@ BasicURL = "https://developers.zomato.com/api/v2.1/"
 count = 0
 main_intent = None
 
-def wit_response_food(sender_id, messaging_text):
-    client.run_actions(session_id=sender_id, message=messaging_text)
+def fb_message(sender_id, text):
+    """
+    Function for returning response to messenger
+    """
+    data = {
+        'recipient': {'id': sender_id},
+        'message': {'text': text}
+    }
+    # Setup the query string with your PAGE TOKEN
+    qs = 'access_token=' + FB_ACCESS_TOKEN
+    # Send POST request to messenger
+    resp = requests.post('https://graph.facebook.com/me/messages?' + qs,
+                         json=data)
+    return resp.content
 
 
 def first_entity_value(entities, entity):
@@ -28,14 +40,11 @@ def first_entity_value(entities, entity):
 
 def send(request, response):
     #Sender function
-    global text
     sender_id = request['session_id']
     text = response['text']
     # send message
-    #fb_message(sender_id,text.decode('utf-8'))
+    fb_message(sender_id,text.decode('utf-8'))
 
-def response_fb_food():
-    return text
 #def send(request, response):
 #	text = response['text']
 #	print text
@@ -95,18 +104,16 @@ def get_restaurant(request):
 		del context['missingCuisine']
 	if context.get('errorEvent') is not None:
 		del context['errorEvent']
-
-
-	if entities is not None:		
-            location = first_entity_value(entities, 'location')
-            if location:
-            	setLocation(context, location)
-            elif 'setLocation' in context:
-            	pprint(context)
-            else:
+			
+	location = first_entity_value(entities, 'location')
+	if location:
+		setLocation(context, location)
+	elif 'setLocation' in context:
+		pprint(context)
+	else:
 		context['missingLocation'] = True
 		
-            if context.get('location') is not None:
+	if context.get('location') is not None:
 		cuisine = first_entity_value(entities, 'cuisine')
 		if cuisine:
 			setCuisine(context, cuisine)
@@ -119,13 +126,13 @@ def get_restaurant(request):
 			context['missingCuisine'] = True
 	
 	
-            if context.get('missingLocation') is not None:
+	if context.get('missingLocation') is not None:
 		cuisine = first_entity_value(entities, 'cuisine')
 		if cuisine:
 			context['setCuisine']='true'
 			context['cuisine_name']=first_entity_value(entities, 'cuisine')
 			
-            if context.get('missingLocation') is None and context.get('missingCuisine') is None: 
+	if context.get('missingLocation') is None and context.get('missingCuisine') is None: 
 		data=findRestaurant(context)
 		    
 		if context.get('errorEvent') is not None:
@@ -144,9 +151,7 @@ def get_restaurant(request):
 			say = ["Why don't you try", "You could visit", "Drop by", "Try out", "I recommend", "How about"]
 			shuffle(say)
 			context['say'] = say[0]
-	else:
-            context['missingCuisine'] = True
-            context['missingLocation'] = True
+		
 
 	print "before out of get_restaurant"
 	pprint(context)

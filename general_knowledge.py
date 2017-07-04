@@ -8,7 +8,7 @@ def main(messaging_text):
     try:
         return next(res.results).text
     except StopIteration:
-            print ("No results")
+            return "No results"
     except AttributeError:
             return "I have no answer"
 		
